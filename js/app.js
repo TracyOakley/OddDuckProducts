@@ -12,7 +12,9 @@ let maxVotes = 25;
 
 let imgContainer = document.getElementById('imgContainer');
 
-let results = document.querySelector('ul');
+//let results = document.querySelector('ul');
+
+let queArray = [];
 
 let image1 = document.getElementById('image1');
 let image2 = document.getElementById('image2');
@@ -55,14 +57,17 @@ function randomProduct(){
 }
 
 function renderProducts(){
-  let img1 = randomProduct();
-  let img2 = randomProduct();
-  let img3 = randomProduct();
-
-  while (img1===img2 || img2 === img3 || img1 === img3){
-    img2 = randomProduct();
-    img3 = randomProduct();
+  
+  while (queArray.length < 6) {
+    let ranNum = randomProduct();
+    if (!queArray.includes(ranNum)) {
+      queArray.push(ranNum);
+    }
   }
+  console.log(queArray);
+  let img1 = queArray.shift();
+  let img2 = queArray.shift();
+  let img3 = queArray.shift();
 
   image1.src = allProducts[img1].src;
   image1.alt = allProducts[img1].name;
@@ -75,8 +80,9 @@ function renderProducts(){
   image3.src = allProducts[img3].src;
   image3.alt = allProducts[img3].name;
   allProducts[img3].views++;
-}
 
+}
+/*
 function renderResults(){
   for(let i = 0; i < allProducts.length;i++){
     let li = document.createElement('li');
@@ -84,6 +90,7 @@ function renderResults(){
     results.appendChild(li);
   }
 }
+*/
 
 function handleClick(event){
 
@@ -104,15 +111,16 @@ function handleClick(event){
 
   if(numOfVotes === maxVotes){
     imgContainer.removeEventListener('click', handleClick);
+    displayChart();
     //renderResults();
-    addButton();
+    //addButton();
   }else{
   //results.innerHTML=('');
     renderProducts();
   }
 
 }
-
+/*
 function handleResults(){
   results.innerHTML='';
   results.removeEventListener('click', handleResults);
@@ -124,6 +132,97 @@ function addButton(){
   button.textContent= 'Results';
   results.appendChild(button);
   results.addEventListener('click', handleResults);
+}
+*/
+
+
+// Lab 12 - Chart.js  new Chart comes from link in html
+
+
+function displayChart(){
+
+  let productNames = [];
+  let productViews = [];
+  let productScore = [];
+  for (let i = 0; i < allProducts.length; i++) {
+    productNames.push(allProducts[i].name);
+    productViews.push(allProducts[i].views);
+    productScore.push(allProducts[i].score);
+  }
+
+
+  const data = {
+    labels: productNames,
+    datasets: [{ 
+      label: '# of Views',
+      data: productViews,
+      backgroundColor: [
+        'rgba(2, 299, 132, 0.5)'
+      ],
+      borderColor: [
+        'rgb(2, 299, 132)'
+      ],
+      borderWidth: 1,
+      borderRadius: 7,
+      
+    },{
+      label: '# of Votes',
+      data: productScore,
+      backgroundColor: [
+        'rgba(20, 20, 20, 0.5)'
+      ],
+      borderColor: [
+        'rgb(20, 20, 20)'
+      ],
+      borderWidth: 1,
+      borderRadius:7,
+    }]
+  };
+
+  const config = {
+    type: 'bar',
+    data: data,
+    options: {
+      plugins: {
+        legend: {
+          labels: {
+          // This more specific font property overrides the global property
+            font: {
+              size: 20
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            color: 'brown',
+            display: true,
+            text: 'Tally',
+            font: {size: 25}
+          }
+        },
+        x:{
+          title: {
+            color: 'brown',
+            display: true,
+            text: 'Products',
+            font: {size: 25}
+
+          }
+        }
+      }
+    },
+  };
+
+
+
+  const myChart = new Chart(
+    document.getElementById('myChart'),
+    config
+  );
+
 }
 
 

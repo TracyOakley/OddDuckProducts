@@ -18,8 +18,8 @@ header h1 {
 
 main{
   display: grid;
-  grid-template-columns: 250px 2fr ;
-  grid-template-rows: 2fr 80px 1fr;
+  grid-template-columns: 20% 80% ;
+  grid-template-rows: 300px 50px 400px;
 }
 
 main div
@@ -35,7 +35,7 @@ ul{
   grid-column: 2 / 3;
   grid-row: 1 / 2 ;
   display: flex;
-  justify-content: space-between;
+  justify-content:space-between;
   
 }
 
@@ -44,8 +44,10 @@ li{
 }
 
 div img{
-  margin-right: 1rem;
+  
   border: 5px solid transparent;
+  max-width: 330px;
+  max-height: 270px;
 }
 
 div img:hover{
@@ -53,10 +55,14 @@ div img:hover{
   cursor: pointer;
 }
 
-article {
+#chart {
   grid-column: 2 / 3;
   grid-row: 3 / 4;
+  width: 800px;
+  height: 350px;
+
 }
+
 
 ul p {
   border: 5px solid transparent;
@@ -85,9 +91,10 @@ p {
 footer{
   border: 5px solid black;
   text-align: center;
+  margin-top: 40px;
 }
 footer h1 {
-  margin: 20px;
+  margin: 20px 0px;
   font-size: 30px;
   font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   font-weight: bold;
