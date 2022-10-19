@@ -22,12 +22,12 @@ let image3 = document.getElementById('image3');
 
 //Constructor for Products
 
-function Product(name, fileExtention = 'jpg'){
+function Product(name, fileExtention = 'jpg', score = 0, views = 0){
   this.name = name;
   this.fileExtention = fileExtention;
   this.src = `img/${this.name}.${fileExtention}`;
-  this.score = 0;
-  this.views = 0;
+  this.score = score;
+  this.views = views;
 }
 
 let bag = new Product('bag');
@@ -82,15 +82,7 @@ function renderProducts(){
   allProducts[img3].views++;
 
 }
-/*
-function renderResults(){
-  for(let i = 0; i < allProducts.length;i++){
-    let li = document.createElement('li');
-    li.textContent = `${allProducts[i].name} had ${allProducts[i].score} votes and was seen ${allProducts[i].views} times.`;
-    results.appendChild(li);
-  }
-}
-*/
+
 
 function handleClick(event){
 
@@ -112,28 +104,59 @@ function handleClick(event){
   if(numOfVotes === maxVotes){
     imgContainer.removeEventListener('click', handleClick);
     displayChart();
-    //renderResults();
-    //addButton();
+    storeProducts();
   }else{
-  //results.innerHTML=('');
     renderProducts();
   }
 
 }
-/*
-function handleResults(){
-  results.innerHTML='';
-  results.removeEventListener('click', handleResults);
-  renderResults();
+
+// Lab 13 - Local Storage
+
+// function to store - do this when displaying chart
+function storeProducts(){
+  let productsInfoString = JSON.stringify(allProducts);
+  localStorage.setItem('products', productsInfoString);
 }
 
-function addButton(){
-  let button = document.createElement('p');
-  button.textContent= 'Results';
-  results.appendChild(button);
-  results.addEventListener('click', handleResults);
+// function to getStored - do this upon initialization
+function getProducts(){
+  // check if localstorage has orders?
+  // if there are no orders potentialOrders will be null
+  let productTallies = localStorage.getItem('products');
+  // if it does have orders, unpack them
+  if(productTallies){
+    allProducts = [];
+    let parsedProducts = JSON.parse(productTallies);
+    //allProducts = parsedProducts; //I tried it here
+    
+    // POJO — Plain old JavaScript objects
+    // reinstantiate — turn them POJOs back into instances of Drink (if using .prototype but it did it here as well)
+    // OLD WAY: for (let i = 0; i < parsedOrders.length; i++)
+    // NEW WAY: for (let varNameToReferToEachItemInArray of nameOfArray )
+    
+    for (let product of parsedProducts) {
+      let name = product.name;
+      let fileExtention = product.fileExtention;
+      let score = product.score;
+      let views = product.views;
+      makeProduct(name, fileExtention, score, views);
+    }
+    
+    // I may not have had to done the reinstatiation here bc general function and not prototype
+    // question is can i just set allProducts to whatever parsedProducts is and it work?
+    //It does work hahaha
+  }
 }
-*/
+
+// make a product
+function makeProduct(name, fileExtention, score, views){
+  let addProduct = new Product(name, fileExtention, score, views);
+  allProducts.push(addProduct);
+
+}
+
+
 
 
 // Lab 12 - Chart.js  new Chart comes from link in html
@@ -197,7 +220,7 @@ function displayChart(){
         y: {
           beginAtZero: true,
           title: {
-            color: 'brown',
+            color: 'rgba(2, 299, 132, 0.6)',
             display: true,
             text: 'Tally',
             font: {size: 25}
@@ -205,7 +228,7 @@ function displayChart(){
         },
         x:{
           title: {
-            color: 'brown',
+            color: 'rgb(2, 299, 132, 0.6)',
             display: true,
             text: 'Products',
             font: {size: 25}
@@ -217,7 +240,7 @@ function displayChart(){
   };
 
 
-
+  //there is a link in the html to the new Chart, VS Code doesn't like it
   const myChart = new Chart(
     document.getElementById('myChart'),
     config
@@ -225,9 +248,9 @@ function displayChart(){
 
 }
 
-
+// Executable Code
+getProducts(); //I let the initial creation occur but then if there is localStorage I just clear the old array of products and generate a new array with the data
 
 imgContainer.addEventListener('click', handleClick);
 
 renderProducts();
-//renderResults();
